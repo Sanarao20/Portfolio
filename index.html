@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sahana | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+  <style>
+    :root{
+      --bg:#0a0b0f;
+      --fg:#e6e8ef;
+      --muted:#a6abbd;
+      --card:rgba(255,255,255,0.05);
+      --card-border:rgba(255,255,255,0.08);
+      --brand:#7c85ff;
+      --brand-2:#00e5ff;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius-2xl: 20px;
+      --radius-xl: 16px;
+      --radius-lg: 12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:'Inter',system-ui; color:var(--fg);
+      background: radial-gradient(1200px 1200px at 20% -10%, #1b1f3b 0%, transparent 60%),
+                  radial-gradient(1200px 1200px at 120% 10%, #0b2b33 0%, transparent 60%),
+                  var(--bg);
+      overflow-x:hidden;
+    }
+
+    .blobs{position:fixed; inset:0; z-index:-1; filter: blur(100px); pointer-events:none}
+    .blob{position:absolute; width:650px; height:650px; border-radius:50%; opacity:.45; mix-blend:screen; animation: float 16s ease-in-out infinite}
+    .b1{left:-10%; top:-10%; background: radial-gradient(circle at 30% 30%, var(--brand), transparent 60%)}
+    .b2{right:-15%; top:10%; background: radial-gradient(circle at 70% 40%, #2dc7ff, transparent 60%); animation-delay: -4s}
+    .b3{left:30%; bottom:-20%; background: radial-gradient(circle at 40% 60%, #8b5cf6, transparent 60%); animation-delay: -8s}
+    @keyframes float{0%,100%{transform:translateY(0) translateX(0)} 50%{transform:translateY(-30px) translateX(20px)}}
+
+    .container{width:min(1120px, 92%); margin-inline:auto}
+    header{position:sticky; top:0; backdrop-filter:saturate(160%) blur(10px); background:linear-gradient(180deg, rgba(10,11,15,.72), rgba(10,11,15,.35) 70%, transparent); border-bottom:1px solid var(--card-border); z-index:50}
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--fg)}
+    .logo{width:38px; height:38px; display:grid; place-items:center; border-radius:12px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow:var(--shadow)}
+    .brand h1{font-size:18px; letter-spacing:.4px; margin:0}
+    .links{display:flex; align-items:center; gap:10px}
+    .links a{color:var(--fg); text-decoration:none; padding:10px 12px; border-radius:12px; border:1px solid transparent}
+    .links a:hover{background:var(--card); border-color:var(--card-border)}
+    .btn{background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#041018; font-weight:700; padding:10px 14px; border-radius:14px; border:none; cursor:pointer}
+    .btn:hover{filter:brightness(1.05)}
+
+    .hero{padding:72px 0 24px}
+    .hero-grid{display:grid; grid-template-columns: 3fr 2fr; gap:32px}
+    .card{background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius-2xl); box-shadow:var(--shadow); transform-style:preserve-3d; transition: transform .15s ease}
+    .glass{backdrop-filter: blur(10px) saturate(120%)}
+    .hero .card{padding:28px}
+    h2.section-title{font-size:24px; margin:0 0 14px}
+    .title{font-size:42px; font-weight:900; line-height:1.15; margin:0 0 14px}
+    .subtitle{color:var(--muted); font-size:16px; margin:0 0 20px}
+
+    .quick{display:flex; gap:12px; flex-wrap:wrap}
+    .quick a{display:inline-flex; align-items:center; gap:10px; text-decoration:none; color:var(--fg); background:rgba(255,255,255,.06); border:1px solid var(--card-border); padding:10px 14px; border-radius:12px}
+    .quick a:hover{background:rgba(255,255,255,.1)}
+
+    .skills{padding:24px 0}
+    .skill-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px}
+    .skill-card{padding:18px; border-radius:var(--radius-xl)}
+    .skill-title{font-size:14px; color:var(--muted); margin-bottom:10px}
+    .tags{display:flex; flex-wrap:wrap; gap:8px}
+    .tag{font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid var(--card-border); background: rgba(255,255,255,0.04)}
+
+    .projects{padding:24px 0 80px}
+    .filter-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px}
+    .chip{padding:8px 12px; border-radius:999px; border:1px solid var(--card-border); background:rgba(255,255,255,.04); cursor:pointer; user-select:none}
+    .chip.active{background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#041018; font-weight:700}
+
+    .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+    .project{position:relative; overflow:hidden}
+
+    .project .body{padding:18px}
+    .project h3{margin:0 0 6px; font-size:18px}
+    .project p{margin:0 0 10px; color:var(--muted); font-size:14px}
+    .stack{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+    .stack .tag{opacity:.9}
+    .project .actions{display:flex; gap:8px; margin-top:14px}
+    .btn-ghost{border:1px solid var(--card-border); background:rgba(255,255,255,.04); color:var(--fg); padding:8px 12px; border-radius:12px; text-decoration:none}
+    .btn-ghost:hover{background:rgba(255,255,255,.08)}
+    .badge{position:absolute; top:12px; right:12px; font-size:12px; padding:6px 10px; border-radius:999px; background: linear-gradient(135deg, #22c55e, #a3e635); color:#06130a; font-weight:800}
+
+    footer{padding:30px 0 60px; color:var(--muted)}
+
+    .reveal{opacity:0; transform: translateY(10px); transition:.6s ease}
+    .reveal.show{opacity:1; transform:none}
+
+    @media (max-width: 1000px){
+      .hero-grid{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr 1fr}
+      .skill-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width: 640px){
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="blobs" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#top">
+        
+        <h1 id="brandName">Sahana</h1>
+      </a>
+      <div class="links">
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#about">About</a>
+        <a id="ghLink" aria-label="GitHub" target="_blank"><i class="fa-brands fa-github"></i></a>
+        <a id="liLink" aria-label="LinkedIn" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+        <a id="mailLink" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+        <a id="resumeBtn" class="btn" download>Download Resume</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="card glass reveal" data-tilt>
+          <h2 class="title" id="titleName">Sahana</h2>
+          <p class="subtitle" id="tagline">Data Science Engineer • Image Processing • ML</p>
+          <div class="quick">
+            <a href="#about"><i class="fa-solid fa-user-graduate"></i> <span id="edu"></span></a>
+            <a href="#about"><i class="fa-solid fa-building-columns"></i> <span id="college"></span></a>
+            <a id="mailCTA"><i class="fa-solid fa-paper-plane"></i> Get in touch</a>
+            <a id="resumeCTA" class="btn"><i class="fa-solid fa-file-arrow-down"></i> Resume</a>
+          </div>
+        </div>
+        <div class="card glass reveal" id="about" data-tilt>
+          <h2 class="section-title">About</h2>
+          <p style="color:var(--muted); line-height:1.7">
+            I'm a curious and adaptable Data Science engineer who loves building practical solutions—from computer vision mini-projects to data storytelling dashboards. I enjoy turning messy data into clear decisions and prototypes into polished tools.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="skills container">
+      <div class="card glass reveal" style="padding:22px" data-tilt>
+        <h2 class="section-title">Skills</h2>
+        <div class="skill-grid" id="skillGrid"></div>
+      </div>
+    </section>
+
+    <section id="projects" class="projects container">
+      <div class="card glass reveal" style="padding:22px; margin-bottom:16px" data-tilt>
+        <h2 class="section-title">Key Projects</h2>
+        <p class="subtitle">A curated selection across Computer Vision, Data Analysis, Automation and ML. Filter and explore.</p>
+        <div class="filter-row" id="filters"></div>
+      </div>
+      <div class="grid" id="projectGrid"></div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <div class="card glass reveal" style="padding:18px; display:flex; align-items:center; justify-content:space-between; gap:12px" data-tilt>
+      <div>
+        Portfolio of Sahana 
+      </div>
+      <div class="links">
+        <a id="ghLink2" aria-label="GitHub" target="_blank"><i class="fa-brands fa-github"></i></a>
+        <a id="liLink2" aria-label="LinkedIn" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+        <a id="mailLink2" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ===== Editable profile + links =====
+    const profile = {
+      name: "Sahana Rao",
+      tagline: "Data Science Engineer • Image Processing • ML",
+      education: "Computer Science (Data Science) Engineering",
+      college: "St Joseph Engineering College, Mangaluru",
+      links: {
+        github: "https://github.com/Sanarao20",     
+        linkedin: "https://www.linkedin.com/in/sahana-rao-8a9a30330/", 
+        email: "mailto:sahanarao020@gmail.com",       
+        resume: "_Resume.pdf"                          
+      }
+    };
+
+    // ===== Skills data =====
+    const skills = [
+      { title: "Technical Skills", items: ["Data Analysis", "Data Visualization"] },
+      { title: "Programming Languages", items: ["Python", "C", "Java", "R"] },
+      { title: "Developer Tools", items: ["Git/GitHub", "MySQL", "VS Code", "Jupyter Notebook"] },
+      { title: "Operating Systems", items: ["Windows"] },
+      { title: "Databases & Backend", items: ["MySQL", "MongoDB"] },
+      { title: "Soft Skills", items: ["Leadership", "Time Management", "Teamwork", "Creativity", "Adaptable"] }
+    ];
+
+    // ===== Project data =====
+    // category can be one of: 'All', 'Audio', 'CV', 'Data', 'Automation', 'ML'
+    const projects = [
+      {
+        title: "Sound Localization using Microphone Array (Ongoing)",
+        featured: true,
+        category: "Audio",
+        summary: "Localizing a sound source with TDOA methods using a microphone array.",
+        details: [
+          "Implements Time Difference of Arrival (TDOA) pipelines for direction estimation",
+          "Signal processing, synchronization and geometry-based localization"
+        ],
+        stack: ["Python", "Signal Processing", "NumPy", "Matplotlib"],
+        github: null
+      },
+      {
+        title: "Rotten Fruit Part – Image Segmentation",
+        category: "CV",
+        summary: "HSV-based segmentation to highlight rotten regions in fruit from static and live camera feeds.",
+        details: [
+          "Adjustable thresholds for robust detection",
+          "Proof-of-concept for automated sorting"
+        ],
+        stack: ["Python", "OpenCV", "NumPy", "Matplotlib"],
+        github: "https://github.com/Sanarao20/Fruit_spoiled_checker"
+      },
+      {
+        title: "Social Networking – Usage Insights Dashboard",
+        category: "Data",
+        summary: "Survey analysis in Power BI revealing trends across screen-time, age and devices.",
+        details: [
+          "Dashboard tailored for non-technical stakeholders"
+        ],
+        stack: ["Power BI", "Excel", "Python"],
+        github: null
+      },
+      {
+        title: "Career Connect – Job Automation Tool",
+        category: "Automation",
+        summary: "UiPath workflow to parse Excel job requirements, search Naukri.com and email matches.",
+        details: [
+          "Automates end-to-end discovery and reporting"
+        ],
+        stack: ["UiPath", "Excel", "Python"],
+        github: null
+      },
+      {
+        title: "River Water Analysis",
+        category: "Data",
+        summary: "Clustering of water samples across sources with comparative visualizations.",
+        details: [
+          "Data cleaning, EDA and clustering"
+        ],
+        stack: ["Python", "pandas", "matplotlib", "seaborn", "scikit-learn"],
+        github: null
+      },
+      {
+        title: "Person Extraction from Photo",
+        category: "CV",
+        summary: "Semantic segmentation with DeepLabV3 to remove background and isolate people.",
+        details: [
+          "Pretrained PyTorch model for accurate masks",
+          "Works for any input image"
+        ],
+        stack: ["Python", "PyTorch", "torchvision", "OpenCV", "NumPy"],
+        github: "https://github.com/Sanarao20/person-extraction-python"
+      }
+    ];
+
+    // ===== Helpers =====
+    const $ = (q, el=document) => el.querySelector(q);
+    const $$ = (q, el=document) => Array.from(el.querySelectorAll(q));
+
+    function renderProfile(){
+      $('#brandName').textContent = profile.name;
+      $('#titleName').textContent = profile.name;
+      $('#tagline').textContent = profile.tagline;
+      $('#edu').textContent = profile.education;
+      $('#college').textContent = profile.college;
+
+      const {github, linkedin, email, resume} = profile.links;
+      $('#ghLink').href = github; $('#ghLink2').href = github;
+      $('#liLink').href = linkedin; $('#liLink2').href = linkedin;
+      $('#mailLink').href = email; $('#mailLink2').href = email; $('#mailCTA').href = email;
+      $('#resumeBtn').href = resume; $('#resumeCTA').href = resume;
+    }
+
+    function renderSkills(){
+      const grid = $('#skillGrid');
+      grid.innerHTML = '';
+      skills.forEach(({title, items}) =>{
+        const card = document.createElement('div');
+        card.className = 'skill-card card glass';
+        card.setAttribute('data-tilt','');
+        card.innerHTML = `<div class="skill-title">${title}</div>` +
+          `<div class="tags">`+
+          items.map(it=>`<span class="tag">${it}</span>`).join('')+
+          `</div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    function projectCard(p){
+      const div = document.createElement('article');
+      div.className = 'project card glass reveal';
+      div.dataset.category = p.category;
+      div.setAttribute('data-tilt','');
+      div.innerHTML = `
+        ${p.featured?'<span class="badge">Ongoing</span>':''}
+        <div class="cover"></div>
+        <div class="body">
+          <h3>${p.title}</h3>
+          <p>${p.summary}</p>
+          ${p.details && p.details.length? `<ul style="margin:0; padding-left:18px; color:var(--muted); font-size:14px">${p.details.map(d=>`<li>${d}</li>`).join('')}</ul>`:''}
+          <div class="stack">${p.stack.map(t=>`<span class='tag'>${t}</span>`).join('')}</div>
+          <div class="actions">
+            ${p.github? `<a class="btn-ghost" href="${p.github}" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>` : `<span class="btn-ghost" style="opacity:.7; cursor:not-allowed" title="Add 'github' URL in JS to enable"><i class="fa-brands fa-github"></i> GitHub</span>`}
+          </div>
+        </div>`;
+      return div;
+    }
+
+    function renderProjects(filter='All'){
+      const grid = $('#projectGrid');
+      grid.innerHTML = '';
+      projects
+        .filter(p => filter==='All' || p.category===filter)
+        .forEach(p => grid.appendChild(projectCard(p)));
+      applyReveal();
+      applyTilt();
+    }
+
+    function renderFilters(){
+      const uniq = ['All', ...new Set(projects.map(p=>p.category))];
+      const row = $('#filters');
+      row.innerHTML = '';
+      uniq.forEach((c,i)=>{
+        const chip = document.createElement('button');
+        chip.className = 'chip' + (i===0?' active':'');
+        chip.textContent = c;
+        chip.addEventListener('click', ()=>{
+          $$('.chip', row).forEach(el=>el.classList.remove('active'));
+          chip.classList.add('active');
+          renderProjects(c);
+        });
+        row.appendChild(chip);
+      })
+    }
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target);} })
+    }, {threshold:.12});
+
+    function applyReveal(){ $$('.reveal').forEach(el=> io.observe(el)); }
+
+    // Subtle tilt interaction
+    function applyTilt(){
+      $$('[data-tilt]').forEach(card=>{
+        card.onmousemove = (e)=>{
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left)/r.width - .5;
+          const y = (e.clientY - r.top)/r.height - .5;
+          card.style.transform = `rotateX(${(-y*4).toFixed(2)}deg) rotateY(${(x*6).toFixed(2)}deg)`;
+        };
+        card.onmouseleave = ()=>{ card.style.transform = 'rotateX(0) rotateY(0)'; };
+      });
+    }
+
+    function enhance(){
+      // Smooth internal links
+      $$('a[href^="#"]').forEach(a=>{
+        a.addEventListener('click', e=>{
+          const href = a.getAttribute('href');
+          if(href.length>1){ e.preventDefault(); document.querySelector(href).scrollIntoView({behavior:'smooth'}); }
+        });
+      });
+    }
+
+    // Init
+    renderProfile();
+    renderSkills();
+    renderFilters();
+    renderProjects('All');
+    applyReveal();
+    applyTilt();
+    enhance();
+  </script>
+</body>
+</html>
